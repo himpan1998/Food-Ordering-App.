@@ -7,7 +7,7 @@ export const Title = () => {
           alt="logo"
           className="logo"
           src={logo}
-        />
+        /> 
       </a>
     );
   };
