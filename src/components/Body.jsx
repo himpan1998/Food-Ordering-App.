@@ -1,20 +1,31 @@
 import {useState,useEffect} from "react"
 import { restranutlist } from "../constant";
 import RasturantCard from "./RasturantCard";
-
+// import Shimmer from "./Shimmer";
 const filterData=(searchText,reastaurtants)=>{
-    const filterData=reastaurtants.filter((restaurant)=>restaurant.data.name.includes(searchText))
+    const filterData=reastaurtants.filter((restaurant)=>restaurant.info.name.includes(searchText))
       return filterData;  
       
  }
-   useEffect=(()=>{
-    setReastaurtants()
-   },[])
 
 const Body = () => {
-  const  [reastaurtants,setReastaurtants]=useState(restranutlist)
+  const  [reastaurtants,setReastaurtants]=useState([])
   const [searchText,setSearchText]=useState("");
 
+ useEffect(()=>{
+    // API CALL
+    getReasurants()
+ }, [])
+
+ async function getReasurants(){
+  const data= await fetch( 
+    "https://www.swiggy.com/dapi/restaurants/list/v5?lat=19.425393&lng=72.813882&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING"
+    );
+  const json= await data.json()
+  let swiggyData=json?.data?.cards[3]?.card?.card?.gridElements?.infoWithStyle?.restaurants
+  setReastaurtants(swiggyData)
+}
+// (reastaurtants.length===0)?<Shimmer/>:
   return (
     <>
     <div className="search-container">
@@ -27,18 +38,18 @@ const Body = () => {
       setSearchText(e.target.value)
       
      }}
-     
-     />
-     
+     /> 
      <button className="search-btn"  onClick={()=>{
        const data=filterData(searchText,reastaurtants)
-        setReastaurtants(data)
+       setReastaurtants(data)
      }}
-     >search</button>
+
+     >search</button> 
     </div>
     <div className="reastaurtant-list">
       {reastaurtants.map((restaurant) => {
-        return <RasturantCard {...restaurant.data} key={restaurant.data.id} />;
+        console.log(restaurant.info.id,'iddsssss');
+        return <RasturantCard {...restaurant.info} key={restaurant.info.id} />;
       })}
     </div>
     </>
