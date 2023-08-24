@@ -1,15 +1,17 @@
 import {useState,useEffect} from "react"
 import { restranutlist } from "../constant";
 import RasturantCard from "./RasturantCard";
-// import Shimmer from "./Shimmer";
+import Shimmer from "./Shimmer";
+
 const filterData=(searchText,reastaurtants)=>{
-    const filterData=reastaurtants.filter((restaurant)=>restaurant.info.name.includes(searchText))
+const filterData=reastaurtants.filter((restaurant)=>restaurant?.info?.name?.toLowerCase()?.includes(searchText?.toLowerCase()))
       return filterData;  
       
  }
 
 const Body = () => {
-  const  [reastaurtants,setReastaurtants]=useState([])
+  const [allReastaurtants,setAllReastaurtants]=useState([])
+  const [filteredReastaurtants,setFilteredReastaurtants]=useState([])
   const [searchText,setSearchText]=useState("");
 
  useEffect(()=>{
@@ -23,10 +25,15 @@ const Body = () => {
     );
   const json= await data.json()
   let swiggyData=json?.data?.cards[3]?.card?.card?.gridElements?.infoWithStyle?.restaurants
-  setReastaurtants(swiggyData)
+  console.log("data:",swiggyData)
+  setAllReastaurtants(swiggyData)
+ setFilteredReastaurtants(swiggyData)
+
 }
-// (reastaurtants.length===0)?<Shimmer/>:
-  return (
+if(!allReastaurtants) return null;
+if(filteredReastaurtants?.length===0) return <h1>No Resturant match your Filter!</h1>
+
+  return (allReastaurtants?.length===0)?<Shimmer/>:(
     <>
     <div className="search-container">
     <input
@@ -40,14 +47,14 @@ const Body = () => {
      }}
      /> 
      <button className="search-btn"  onClick={()=>{
-       const data=filterData(searchText,reastaurtants)
-       setReastaurtants(data)
+       const data=filterData(searchText,allReastaurtants)
+       setFilteredReastaurtants(data)
      }}
 
      >search</button> 
     </div>
     <div className="reastaurtant-list">
-      {reastaurtants.map((restaurant) => {
+      {filteredReastaurtants.map((restaurant) => {
         console.log(restaurant.info.id,'iddsssss');
         return <RasturantCard {...restaurant.info} key={restaurant.info.id} />;
       })}
