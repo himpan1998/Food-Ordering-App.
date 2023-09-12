@@ -1,5 +1,5 @@
 import {useState,useEffect} from "react"
-import { restranutlist } from "../constant";
+// import {restranutlist} from "../constant";
 import RasturantCard from "./RasturantCard";
 import Shimmer from "./Shimmer";
 
@@ -7,6 +7,9 @@ const filterData=(searchText,reastaurtants)=>{
 const filterData=reastaurtants.filter((restaurant)=>restaurant?.info?.name?.toLowerCase()?.includes(searchText?.toLowerCase()))
       return filterData;  
       
+ }
+ if(filterData===null){
+  return swiggyData
  }
 
 const Body = () => {
@@ -21,12 +24,11 @@ const Body = () => {
 
  async function getReasurants(){
   const data= await fetch( 
-    "https://www.swiggy.com/dapi/restaurants/list/v5?lat=19.425393&lng=72.813882&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING"
+    "https://corsproxy.io/?https://www.swiggy.com/dapi/restaurants/list/v5?lat=21.1702401&lng=72.83106070000001&page_type=DESKTOP_WEB_LISTING"
     );
   const json= await data.json()
-  let swiggyData=json?.data?.cards[3]?.card?.card?.gridElements?.infoWithStyle?.restaurants
-  console.log("data:",swiggyData)
-  setAllReastaurtants(swiggyData)
+  let swiggyData=json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle?.restaurants
+ setAllReastaurtants(swiggyData)
  setFilteredReastaurtants(swiggyData)
 
 }
